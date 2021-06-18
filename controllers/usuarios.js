@@ -7,7 +7,7 @@ const usuariosGet = async (req, res = response) => {
 
     const { limite = 5, desde = 0 } = req.query;
     const query = { estado: true };
-    
+
     const [total, usuarios] = await Promise.all([
         Usuario.countDocuments(query),
         Usuario.find(query)
@@ -58,15 +58,19 @@ const usuariosPost = async (req, res) => {
 
 const usuariosDelete = async (req, res) => {
 
-    const { id } = req.params;
-
     // Borrado de la base
     // no está bueno porque se pierden las referencias
     // const usuario = await Usuario.findByIdAndDelete(id);
 
-    const usuario = await Usuario.findByIdAndUpdate(id, {estado: false});
+    const { id } = req.params;
 
-    res.json(usuario);
+    const usuarioAutenticado = req.usuario;
+
+    const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+
+
+
+    res.json({usuario,usuarioAutenticado});
 }
 
 module.exports = {
